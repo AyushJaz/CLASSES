@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series Matches</title>
+    <style>
+        * {
+            color: rgb(0, 0, 0);
+            box-sizing: border-box;
+            font-family: sans-serif;
+            color: whitesmoke;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: black;
+        }
+
+        nav {
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            width: 86vw;
+            height: 60px;
+            background-color: rgb(31 31 31);
+            margin: 14px auto;
+            border-radius: 5px;
+        }
+
+        .flex {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+        }
+
+        ul {
+            width: 95%;
+            list-style: none;
+            justify-content: space-evenly;
+        }
+
+        ul>li {
+            cursor: pointer;
+            color: whitesmoke;
+            font-size: larger;
+            font-family: sans-serif;
+            font-weight: 500;
+            position: relative;
+        }
+
+        ul>li:hover {
+            color: white;
+            background-image: radial-gradient(rgb(45, 45, 45), rgb(31 31 31));
+        }
+
+        /* 
+        ul>li::after {
+            content: "";
+            visibility: hidden;
+            height: 3px;
+            border-radius: 6px;
+            width: 68%;
+            background-image: radial-gradient(#035b5b, #00ffff47);
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        } */
+
+        .card {
+            margin: 10px;
+            flex-direction: column;
+            padding: 6px;
+            width: 627px;
+            justify-content: space-around;
+            color: white;
+            border-radius: 15px;
+            background-color: rgb(31 31 31);
+            align-self: baseline;
+        }
+
+        .card-row {
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .flag {
+            height: 24px;
+            width: 33px;
+            border-radius: 4px;
+            box-shadow: 0px 0px 1px 1px black;
+            object-fit: none;
+        }
+
+        .highlight {
+            height: 51px;
+            width: 78px;
+        }
+
+        .colone {
+            align-items: center;
+            gap: 5px;
+        }
+
+        #display {
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(13 13 13);
+            width: 86vw;
+            height: fit-content;
+            padding: 14px;
+            margin: auto;
+            border-radius: 5px;
+            flex-wrap: wrap;
+            /* visibility: hidden; */
+        }
+
+        .title {
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: large;
+            margin: 6px;
+            padding: 5px 30px;
+            background-color: #0e0e0e;
+            font-weight: bold;
+            border-radius: 15px;
+        }
+
+        .title:hover{
+            background-color: #101010;
+        }
+        .month {
+            font-family: sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            height: 42px;
+            line-height: 0.8;
+            background-color: rgb(53, 53, 53);
+            width: 100%;
+            margin: 5px 0px;
+            padding: 12px 15px;
+            border-radius: 5px;
+        }
+
+        .info {
+            margin: 6px;
+            padding: 15px 32px;
+            background-color: #000404cc;
+            border-radius: 16px;
+            display: none;
+            user-select: none;
+        }
+
+        .date {
+
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="display" class="flex">
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        async function seriesMatchesApi() {
+
+            console.log("entered");
+
+            try {
+                let res = await fetch("https://api.cricapi.com/v1/series?apikey=8d032f2f-d64a-4613-b01e-11e92d1cce2f&offset=0&search=");
+                res = await res.json();
+                let matchs = res.data;
+                console.log(matchs);
+                display.innerHTML = "";
+                display.style.visibility = "visible";
+                let arr = [];
+                for (let i = 1; i <= 12; i++) {
+                    let matchByDate = matchs.filter((data) => {
+                        return data.startDate.substring(5, 7) == i;
+                    })
+                    arr.push(matchByDate)
+                }
+                console.log(arr);
+                let month = ["Jauary", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                arr.map((obj, i) => {
+                    display.innerHTML += `
+                    <div class="card flex">
+                        <h3 class="month">${month[i]}</h3>
+                        <div class="titles">
+                
+                         </div>
+                    </div>
+                `;
+                    arr[i].map((val, index) => {
+                        let date = val.startDate.substring(8) + val.startDate.substring(4, 8) + val.startDate.substring(0, 4);
+                        document.getElementsByClassName('titles')[i].innerHTML += `
+                    <div class="title"><p>${val.name}</p></div>
+                    <div class="info">
+                    <div class="date flex"><p>Starts On ${date}</p><p>Ends On : ${val.endDate}</p></div>
+                    <div><p>Odi Matchs &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.odi}</p></div>
+                    <div><p>Squad Matches &nbsp; &nbsp; &nbsp;:: &nbsp; &nbsp; ${val.squads}</p></div>
+                    <div><p>T20 Matches &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:: &nbsp; &nbsp; ${val.t20}</p></div>
+                    <div><p>Test Matches&nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.test}</p></div>
+                    <div><p>Total Matches &nbsp; &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.matches}</p></div>
+                </div>`;
+
+                    })
+
+
+                })
+
+                let title = document.getElementsByClassName('title');
+                for(let i=0;i<title.length;i++)
+                {
+                    title[i].addEventListener('click',()=>{
+                        let info = title[i].nextElementSibling;
+                        if(info.style.display=="none")
+                    {
+                        info.style.display="block";
+                    }
+                    else
+                    info.style.display="none";
+                    })
+                }
+
+
+
+            }
+            catch (err) {
+                console.log(err, "Series Matches error");
+
+            }
+        }
+        seriesMatchesApi();
+    </script>
+</body>
+
+</html>

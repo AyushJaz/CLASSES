@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let arr =[
+            {
+                name:"Ayush",
+                surname: "Jaiswal",
+                id:"8820252110",
+        }
+        ,
+        {
+            name:"Abhi",
+                surname: "Bhati",
+                id:"8820252111",
+        }
+        , {
+            name:"Aryan",
+                surname: "hare",
+                id:"8820252112",
+        },];
+        let data = arr.filter(callback)
+
+        function callback(value,index,ar)
+        {
+            return value.name ;
+        }
+
+        // function mapData(b)
+        // {
+        //     for(let i =0;i<arr.length;i++)
+        // {
+        //     b(arr[i],i,arr)
+        // }
+
+        // }
+        // let data = mapData(callback)
+
+        console.log(data)
+
+    </script>
+</body>
+</html>

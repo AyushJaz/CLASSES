@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Score</title>
+    <style>
+        * {
+            color: rgb(0, 0, 0);
+            box-sizing: border-box;
+            font-family: sans-serif;
+            color: whitesmoke;
+        }
+
+        p{
+            margin: 0;
+            padding: 5px;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: black;
+        }
+
+        nav {
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            width: 86vw;
+            height: 60px;
+            background-color: rgb(31 31 31);
+            margin: 14px auto;
+            border-radius: 5px;
+        }
+
+        .flex {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+        }
+
+        ul {
+            width: 95%;
+            list-style: none;
+            justify-content: space-evenly;
+        }
+
+        ul>li {
+            cursor: pointer;
+            color: whitesmoke;
+            font-size: larger;
+            font-family: sans-serif;
+            font-weight: 500;
+            position: relative;
+        }
+
+        ul>li:hover {
+            color: white;
+            background-image: radial-gradient(rgb(45, 45, 45), rgb(31 31 31));
+        }
+
+        /* 
+        ul>li::after {
+            content: "";
+            visibility: hidden;
+            height: 3px;
+            border-radius: 6px;
+            width: 68%;
+            background-image: radial-gradient(#035b5b, #00ffff47);
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        } */
+
+        .card {
+            margin: 10px;
+            flex-direction: column;
+            padding: 6px;
+            width: 627px;
+            justify-content: space-around;
+            color: white;
+            border-radius: 15px;
+            background-color: rgb(31 31 31);
+            align-self: baseline;
+        }
+
+        .card-row {
+            align-items: center;
+            justify-content: space-between;
+        }
+
+    img {
+            width: 33px;
+            border-radius: 4px;
+            box-shadow: 0px 0px 1px 1px black;
+            object-fit: fill;
+        }
+
+        .highlight {
+            height: 51px;
+            width: 78px;
+        }
+
+        .colone {
+            align-items: center;
+            gap: 5px;
+        }
+
+        #display {
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(13 13 13);
+            width: 86vw;
+            height: fit-content;
+            padding: 14px;
+            margin: auto;
+            border-radius: 5px;
+            flex-wrap: wrap;
+            visibility: hidden;
+        }
+        .active{
+            position: absolute;
+        }
+        .matchs:hover .active {
+            width: 68%;
+            height: 3px;
+            border-radius: 5px;
+            background-image: linear-gradient(45deg, cyan, rgb(153, 0, 255));
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .title {
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: large;
+            margin: 6px;
+            padding: 5px 30px;
+            background-color: #0e0e0e;
+            font-weight: bold;
+            border-radius: 15px;
+        }
+
+        .title:hover {
+            background-color: #101010;
+        }
+
+        .month {
+            font-family: sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            height: 42px;
+            line-height: 0.8;
+            background-color: rgb(53, 53, 53);
+            width: 100%;
+            margin: 5px 0px;
+            padding: 12px 15px;
+            border-radius: 5px;
+        }
+
+        .info {
+            margin: 6px;
+            padding: 15px 32px;
+            background-color: #000404cc;
+            border-radius: 16px;
+            display: none;
+            user-select: none;
+        }
+
+        .date {
+
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <nav class="flex">
+            <ul class="flex">
+                <li id="seriesMatches" class="matchs flex">Series Matches<div class="active">
+                        
+                    </div>
+                </li>
+                <li id="currentMatches" class="matchs flex">Current Matches<div class="active">
+                        
+                    </div>
+                </li>
+                <li id="upcomingMatches" class="matchs flex">Upcoming Matches <div class="active">
+                        
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <div id="display" class="flex">
+        </div>
+    </div>
+
+
+
+
+
+
+    <script>
+        let currentMatches = document.getElementById("currentMatches");
+        let seriesMatches = document.getElementById('seriesMatches');
+        let upcomingMatches = document.getElementById('upcomingMatches');
+        let display = document.getElementById('display');
+
+        async function currentMatchesApi() {
+
+            try {
+                let res = await fetch("https://api.cricapi.com/v1/currentMatches?apikey=8d032f2f-d64a-4613-b01e-11e92d1cce2f")
+                let matchs = await res.json()
+                matchs = matchs.data;
+                display.style.visibility = "visible";
+                console.log(matchs);
+                display.innerHTML = "";
+                for (let i = 0; i < matchs.length; i++) {
+                    let teamName = matchs[i].teams[0];
+                    if (teamName != matchs[i].teamInfo[0].name) {
+                        let swapElement = matchs[i].teamInfo[0];
+                        matchs[i].teamInfo[0] = matchs[i].teamInfo[1];
+                        matchs[i].teamInfo[1] = swapElement;
+                    }
+
+                    display.innerHTML += `
+                <section class="flex card">
+                    <div class="flex card-row">
+                         <div>${matchs[i].name}</div>
+                    </div>
+                    <div class="flex card-row">
+                         <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[0].img} alt="flag"> ${matchs[i].teamInfo[0].shortname}</div>
+                         <div>${matchs[i]?.score[0]?.r || 0}/${matchs[i].score[0]?.w || 0}(${matchs[i]?.score[0]?.o || 0})</div>
+                    </div>
+                    <div class="flex card-row">
+                      <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[1].img} alt="flag"> ${matchs[i].teamInfo[1].shortname}</div>
+                      <div>${matchs[i]?.score[1]?.r || 0}/${matchs[i]?.score[1]?.w || 0}(${matchs[i]?.score[1]?.o || 0})</div>
+                    </div>
+                    <div class="flex card-row">
+                     <div> ${matchs[i].venue}</div>
+                     <div>${matchs[i].status}</div>
+                    </div>
+                </section>`
+                }
+            }
+            catch (err) {
+                console.log(err, "208")
+            }
+        }
+
+        async function seriesMatchesApi() {
+
+            console.log("entered");
+
+            try {
+                let res = await fetch("https://api.cricapi.com/v1/series?apikey=8d032f2f-d64a-4613-b01e-11e92d1cce2f&offset=0&search=");
+                res = await res.json();
+                let matchs = res.data;
+                console.log(matchs);
+                display.innerHTML = "";
+                display.style.visibility = "visible";
+                let arr = [];
+                for (let i = 1; i <= 12; i++) {
+                    let matchByDate = matchs.filter((data) => {
+                        return data.startDate.substring(5, 7) == i;
+                    })
+                    arr.push(matchByDate)
+                }
+                console.log(arr);
+                let month = ["Jauary", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                arr.map((obj, i) => {
+                    display.innerHTML += `
+                    <div class="card flex">
+                    <h3 class="month">${month[i]}</h3>
+                     <div class="titles">
+    
+                     </div>
+                     </div>
+                    `;
+                    arr[i].map((val, index) => {
+                        let date = val.startDate.substring(8) + val.startDate.substring(4, 8) + val.startDate.substring(0, 4);
+                        document.getElementsByClassName('titles')[i].innerHTML += `
+                         <div class="title"><p>${val.name}</p></div>
+                            <div class="info">
+                            <div class="date flex"><p>Starts On ${date}</p><p>Ends On : ${val.endDate}</p></div>
+                            <div><p>Odi Matchs &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.odi}</p></div>
+                            <div><p>Squad Matches &nbsp; &nbsp; &nbsp;:: &nbsp; &nbsp; ${val.squads}</p></div>
+                         <div><p>T20 Matches &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;:: &nbsp; &nbsp; ${val.t20}</p></div>
+                         <div><p>Test Matches&nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.test}</p></div>
+                         <div><p>Total Matches &nbsp; &nbsp; &nbsp; &nbsp; :: &nbsp; &nbsp; ${val.matches}</p></div>
+                        </div>`;
+
+                    })
+                })
+
+                let title = document.getElementsByClassName('title');
+                for (let i = 0; i < title.length; i++) {
+                    title[i].addEventListener('click', () => {
+                        let info = title[i].nextElementSibling;
+                        
+                        if (info.style.display == "none") {
+                            info.style.display = "block";
+                        }
+                        else
+                            info.style.display = "none";
+                    })
+                }
+
+            }
+            catch (err) {
+                console.log(err, "Series Matches error");
+
+            }
+        }
+        async function upcomingMatchesApi() {
+            
+            try{
+                let res = await fetch("https://api.cricapi.com/v1/cricScore?apikey=8d032f2f-d64a-4613-b01e-11e92d1cce2f");
+                 res =await res.json();
+                 let matchs=res.data;
+                 display.style.visibility = "visible";
+                 display.innerHTML="";
+                 matchs.map((v)=>{
+                    display.innerHTML+=`
+                    <div class="card flex">
+                <div class="card-row flex"> <p>${v?.series || "NA"}</p> <p>${v?.dateTimeGMT.substring(0,10)}</p></div>
+                <div class="card-row flex">
+                    <p>${v?.matchType||"Error"}</p>
+                    <p>${v?.status||"Error"}</p>
+                </div>
+                <div class="card-row flex">
+                    <div class="flex" style="align-items:center;"> <img src="${v?.t1img||""}" alt="Flag"> ${v?.t1}</div> ${v?.t1s}
+                </div>
+                <div class="card-row flex">
+                    <div class="flex" style="align-items:center;"> <img src="${v?.t2img||""}" alt="Flag"> ${v?.t2}</div> ${v?.t2s}
+                </div>
+            </div>
+                    `;
+                 })
+
+
+            }
+            catch(error){
+                console.log(error + "upcomingMatches");
+                
+            }
+            
+        }
+
+        currentMatches.addEventListener("click", currentMatchesApi);
+        seriesMatches.addEventListener("click", seriesMatchesApi);
+        upcomingMatches.addEventListener("click", upcomingMatchesApi);
+    </script>
+
+</body>
+
+</html>
