@@ -233,11 +233,11 @@
                          <div>${matchs[i].name}</div>
                     </div>
                     <div class="flex card-row">
-                         <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[0].img} alt="flag"> ${matchs[i].teamInfo[0].shortname}</div>
+                         <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[0]?.img} alt="flag"> ${matchs[i].teamInfo[0]?.shortname}</div>
                          <div>${matchs[i]?.score[0]?.r || 0}/${matchs[i].score[0]?.w || 0}(${matchs[i]?.score[0]?.o || 0})</div>
                     </div>
                     <div class="flex card-row">
-                      <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[1].img} alt="flag"> ${matchs[i].teamInfo[1].shortname}</div>
+                      <div class="flex colone"><img class="flag" src=${matchs[i].teamInfo[1]?.img} alt="flag"> ${matchs[i].teamInfo[1]?.shortname}</div>
                       <div>${matchs[i]?.score[1]?.r || 0}/${matchs[i]?.score[1]?.w || 0}(${matchs[i]?.score[1]?.o || 0})</div>
                     </div>
                     <div class="flex card-row">

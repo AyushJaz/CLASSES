@@ -110,7 +110,6 @@ img {
   margin: auto;
   border-radius: 5px;
   flex-wrap: wrap;
-  visibility: hidden;
 }
 .active{
   position: absolute;
